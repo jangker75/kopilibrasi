@@ -1,0 +1,7 @@
+<style>
+    .required:after{ 
+        content:'*'; 
+        color:red; 
+        padding-left:5px;
+    }
+</style>
