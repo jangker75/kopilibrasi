@@ -17,7 +17,8 @@
             <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
             <h4><i class="icon fa fa-check"></i> Success!</h4>
             Import Data berhasil. <br>
-            {{session()->get('total')}} Data berhasil terupload<br>
+            {{session()->get('total')}} Data penjualan berhasil terupload<br>
+            {{session()->get('totalpengeluaran')}} Data pengeluaran berhasil terupload<br>
           </div>
         @endif
 		<div class="panel panel-default">
@@ -34,7 +35,7 @@
 					<label>File XLS</label>
 					<input type="file" class="form-control" required name="userfile">
 					<div class="help-block">
-						File format .xls, .xlsx. Unduh format template <a href="{{asset('format_import/format import box.xlsx')}}" target="_blank">Klik disini</a>
+						File format .xls, .xlsx. Unduh format template <a href="{{asset('import/test_importkopilibrasi.xlsx')}}" target="_blank">Klik disini</a>
 					</div>
 				</div>
 

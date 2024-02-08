@@ -1,14 +1,11 @@
 <?php namespace App\Http\Controllers;
 
-use App\Imports\PenjualanImport;
-use Session;
+	use Session;
 	use Request;
 	use DB;
 	use CRUDBooster;
-use Illuminate\Support\Facades\DB as FacadesDB;
-use Maatwebsite\Excel\Facades\Excel;
 
-	class AdminTSalesHeaderController extends \crocodicstudio\crudbooster\controllers\CBController {
+	class AdminTPengeluaranController extends \crocodicstudio\crudbooster\controllers\CBController {
 
 	    public function cbInit() {
 
@@ -28,7 +25,7 @@ use Maatwebsite\Excel\Facades\Excel;
 			$this->button_filter = true;
 			$this->button_import = false;
 			$this->button_export = false;
-			$this->table = "t_penjualan";
+			$this->table = "t_pengeluaran";
 			# END CONFIGURATION DO NOT REMOVE THIS LINE
 
 			# START COLUMNS DO NOT REMOVE THIS LINE
@@ -53,14 +50,14 @@ use Maatwebsite\Excel\Facades\Excel;
 			$this->form[] = ['label'=>'Item','name'=>'item','type'=>'text','validation'=>'required','width'=>'col-sm-10'];
 			$this->form[] = ['label'=>'QTY','name'=>'qty','type'=>'number','validation'=>'required|integer','width'=>'col-sm-10'];
 			
-
+			# END FORM DO NOT REMOVE THIS LINE
 
 			# OLD START FORM
 			//$this->form = [];
-			//$this->form[] = ["label"=>"Code","name"=>"code","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Total Price","name"=>"total_price","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
-			//$this->form[] = ["label"=>"Total Item","name"=>"total_item","type"=>"number","required"=>TRUE,"validation"=>"required|integer|min:0"];
-			//$this->form[] = ["label"=>"Status","name"=>"status","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
+			//$this->form[] = ["label"=>"Date","name"=>"date","type"=>"date","required"=>TRUE,"validation"=>"required|date"];
+			//$this->form[] = ["label"=>"Item","name"=>"item","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
+			//$this->form[] = ["label"=>"Qty","name"=>"qty","type"=>"number","required"=>TRUE,"validation"=>"required|integer|min:0"];
+			//$this->form[] = ["label"=>"Total","name"=>"total","type"=>"text","required"=>TRUE,"validation"=>"required|min:1|max:255"];
 			# OLD END FORM
 
 			/* 
@@ -127,7 +124,7 @@ use Maatwebsite\Excel\Facades\Excel;
 	        | 
 	        */
 	        $this->index_button = array();
-			$this->index_button[] = ['label'=>'Import Data','url'=>action('AdminTSalesHeaderController@getImportXls'),'icon'=>'fa fa-upload'];
+
 
 
 	        /* 
@@ -161,31 +158,7 @@ use Maatwebsite\Excel\Facades\Excel;
 	        |
 	        */
 	        $this->script_js = NULL;
-			$this->script_js = "
-			$(document).ready(function(){
-				$('#productsdetailqty').val(1)
-				$('#status').val('Lunas')
-			})
-			$('#btn-add-table-productsdetail').on('click', function(){
-				$('#productsdetailqty').val(1)
-			})
-			$('#btn-add-table-productsdetail').on('click',function(){
-				recalculateTotalPrice()
-			})
-			function recalculateTotalPrice(){
-				let total = 0
-				let totalItem = 0
-				$('input[name=\'productsdetail-sub_total[]\']').each(function(){
-					total = parseInt(total) + parseInt($(this).val())
-				})
-				$('input[name=\'productsdetail-qty[]\']').each(function(){
-					totalItem = parseInt(totalItem) + parseInt($(this).val())
-				})
-				
-				$('#total_item').val(totalItem)
-				$('#total_price').val(total)
-			}
-			";
+
 
             /*
 	        | ---------------------------------------------------------------------- 
@@ -359,61 +332,7 @@ use Maatwebsite\Excel\Facades\Excel;
 	    }
 
 
-		public function getImportXls() {
-	    	return view('backend.penjualan.penjualan_import');
-		}
-		public function postImportXls() {
-	    	ini_set('memory_limit', '256M');
-	    	set_time_limit(1000);
-	    	$file = Request::file('userfile');
-	    	$file->move(public_path('import'),$file->getClientOriginalName());
-			$dataimport = Excel::toArray(new PenjualanImport, public_path('import/'.$file->getClientOriginalName()));
-			$no = 1;
-			$isstart = 0;
-			$dataPenjualan = [];
-			$dataPengeluaran = [];
-			try {
-				foreach($dataimport[0] as $row) {
-					if($row[0] == "TANGGAL"){
-						$isstart = 1;
-						continue;
-					}
-					if($isstart){
-						$tmp["date"] = date("Y-m-d", strtotime($row[0]));
-						$tmp["item"] = $row[1];
-						$tmp["qty"] = $row[2];
-						$tmp["total"] = intval(str_replace(["IDR",","], "", $row[3]));
-						array_push($dataPenjualan, $tmp);
-					}
-				}
-				foreach($dataimport[1] as $row) {
-					if($row[0] == "TANGGAL"){
-						$isstart = 1;
-						continue;
-					}
-					if($isstart){
-						$tmp["date"] = date("Y-m-d", strtotime($row[0]));
-						$tmp["item"] = $row[1];
-						$tmp["qty"] = $row[2];
-						$tmp["total"] = intval(str_replace(["IDR",","], "", $row[3]));
-						array_push($dataPengeluaran, $tmp);
-					}
-				}
-				DB::table("t_penjualan")->insert($dataPenjualan);
-				DB::table("t_pengeluaran")->insert($dataPengeluaran);
-				return Redirect()->back()->with([
-					'data' => count($dataPenjualan),
-					'total' => count($dataPenjualan),
-					'totalpengeluaran' => count($dataPengeluaran)
-				]);
 
-			} catch (\Illuminate\Database\QueryException $ex) {
-				return Redirect()->back()->with([
-					'error' => $ex,
-					'msg' => "Error saat upload!"]);
-			}
-			
-		}
 	    //By the way, you can still create your own method in here... :) 
 
 
