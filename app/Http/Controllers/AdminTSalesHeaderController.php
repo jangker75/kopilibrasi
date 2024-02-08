@@ -1,12 +1,9 @@
 <?php namespace App\Http\Controllers;
 
-use App\Imports\PenjualanImport;
-use Session;
 	use Request;
 	use DB;
 	use CRUDBooster;
-use Illuminate\Support\Facades\DB as FacadesDB;
-use Maatwebsite\Excel\Facades\Excel;
+	use App\Imports\PenjualanImport;
 
 	class AdminTSalesHeaderController extends \crocodicstudio\crudbooster\controllers\CBController {
 
@@ -27,7 +24,7 @@ use Maatwebsite\Excel\Facades\Excel;
 			$this->button_show = true;
 			$this->button_filter = true;
 			$this->button_import = false;
-			$this->button_export = false;
+			$this->button_export = true;
 			$this->table = "t_penjualan";
 			# END CONFIGURATION DO NOT REMOVE THIS LINE
 
@@ -38,12 +35,12 @@ use Maatwebsite\Excel\Facades\Excel;
 				$date = date_format(date_create($row->date), "d-M-Y");
 				return $date;
 			}];
+			$this->col[] = ["label"=>"Item","name"=>"item"];
+			$this->col[] = ["label"=>"Qty","name"=>"qty"];
 			$this->col[] = ["label"=>"Total","name"=>"total", "callback" => function($row){
 				$tot = "Rp. " . number_format($row->total);
 				return $tot;
 			}];
-			$this->col[] = ["label"=>"Item","name"=>"item"];
-			$this->col[] = ["label"=>"Qty","name"=>"qty"];
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
 			# START FORM DO NOT REMOVE THIS LINE
@@ -52,7 +49,6 @@ use Maatwebsite\Excel\Facades\Excel;
 			$this->form[] = ['label'=>'Total','name'=>'total','type'=>'money','validation'=>'required','width'=>'col-sm-10'];
 			$this->form[] = ['label'=>'Item','name'=>'item','type'=>'text','validation'=>'required','width'=>'col-sm-10'];
 			$this->form[] = ['label'=>'QTY','name'=>'qty','type'=>'number','validation'=>'required|integer','width'=>'col-sm-10'];
-			
 
 
 			# OLD START FORM
@@ -161,31 +157,6 @@ use Maatwebsite\Excel\Facades\Excel;
 	        |
 	        */
 	        $this->script_js = NULL;
-			$this->script_js = "
-			$(document).ready(function(){
-				$('#productsdetailqty').val(1)
-				$('#status').val('Lunas')
-			})
-			$('#btn-add-table-productsdetail').on('click', function(){
-				$('#productsdetailqty').val(1)
-			})
-			$('#btn-add-table-productsdetail').on('click',function(){
-				recalculateTotalPrice()
-			})
-			function recalculateTotalPrice(){
-				let total = 0
-				let totalItem = 0
-				$('input[name=\'productsdetail-sub_total[]\']').each(function(){
-					total = parseInt(total) + parseInt($(this).val())
-				})
-				$('input[name=\'productsdetail-qty[]\']').each(function(){
-					totalItem = parseInt(totalItem) + parseInt($(this).val())
-				})
-				
-				$('#total_item').val(totalItem)
-				$('#total_price').val(total)
-			}
-			";
 
             /*
 	        | ---------------------------------------------------------------------- 
@@ -367,7 +338,7 @@ use Maatwebsite\Excel\Facades\Excel;
 	    	set_time_limit(1000);
 	    	$file = Request::file('userfile');
 	    	$file->move(public_path('import'),$file->getClientOriginalName());
-			$dataimport = Excel::toArray(new PenjualanImport, public_path('import/'.$file->getClientOriginalName()));
+			$dataimport = \Maatwebsite\Excel\Facades\Excel::toArray(new PenjualanImport, public_path('import/'.$file->getClientOriginalName()));
 			$no = 1;
 			$isstart = 0;
 			$dataPenjualan = [];
@@ -381,7 +352,7 @@ use Maatwebsite\Excel\Facades\Excel;
 					if($isstart){
 						if(trim($row[0]) != ""){
 							$tmp["date"] = date("Y-m-d", strtotime($row[0]));
-							$tmp["item"] = $row[1];
+							$tmp["item"] = str_replace(["&","%","$","#"],"",trim($row[1]));
 							$tmp["qty"] = $row[2];
 							$tmp["total"] = intval(str_replace(["IDR",","], "", $row[3]));
 							array_push($dataPenjualan, $tmp);
@@ -396,7 +367,7 @@ use Maatwebsite\Excel\Facades\Excel;
 					if($isstart){
 						if(trim($row[0]) != ""){
 							$tmp["date"] = date("Y-m-d", strtotime($row[0]));
-							$tmp["item"] = $row[1];
+							$tmp["item"] = str_replace(["&","%","$","#"],"",trim($row[1]));
 							$tmp["qty"] = $row[2];
 							$tmp["total"] = intval(str_replace(["IDR",","], "", $row[3]));
 							array_push($dataPengeluaran, $tmp);

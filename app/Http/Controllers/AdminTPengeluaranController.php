@@ -24,7 +24,7 @@
 			$this->button_show = true;
 			$this->button_filter = true;
 			$this->button_import = false;
-			$this->button_export = false;
+			$this->button_export = true;
 			$this->table = "t_pengeluaran";
 			# END CONFIGURATION DO NOT REMOVE THIS LINE
 
@@ -35,12 +35,12 @@
 				$date = date_format(date_create($row->date), "d-M-Y");
 				return $date;
 			}];
+			$this->col[] = ["label"=>"Item","name"=>"item"];
+			$this->col[] = ["label"=>"Qty","name"=>"qty"];
 			$this->col[] = ["label"=>"Total","name"=>"total", "callback" => function($row){
 				$tot = "Rp. " . number_format($row->total);
 				return $tot;
 			}];
-			$this->col[] = ["label"=>"Item","name"=>"item"];
-			$this->col[] = ["label"=>"Qty","name"=>"qty"];
 			# END COLUMNS DO NOT REMOVE THIS LINE
 
 			# START FORM DO NOT REMOVE THIS LINE
