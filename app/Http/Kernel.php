@@ -66,5 +66,6 @@ class Kernel extends HttpKernel
         'front' => \App\Http\Middleware\FrontMiddleware::class,
         // 'doNotCacheResponse' => \Spatie\ResponseCache\Middlewares\DoNotCacheResponse::class,
         'cacheResponse' => \Spatie\ResponseCache\Middlewares\CacheResponse::class,
+        'cors' => \App\Http\Middleware\Cors::class, 
     ];
 }
