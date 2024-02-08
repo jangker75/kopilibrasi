@@ -379,11 +379,13 @@ use Maatwebsite\Excel\Facades\Excel;
 						continue;
 					}
 					if($isstart){
-						$tmp["date"] = date("Y-m-d", strtotime($row[0]));
-						$tmp["item"] = $row[1];
-						$tmp["qty"] = $row[2];
-						$tmp["total"] = intval(str_replace(["IDR",","], "", $row[3]));
-						array_push($dataPenjualan, $tmp);
+						if(trim($row[0]) != ""){
+							$tmp["date"] = date("Y-m-d", strtotime($row[0]));
+							$tmp["item"] = $row[1];
+							$tmp["qty"] = $row[2];
+							$tmp["total"] = intval(str_replace(["IDR",","], "", $row[3]));
+							array_push($dataPenjualan, $tmp);
+						}
 					}
 				}
 				foreach($dataimport[1] as $row) {
@@ -392,11 +394,13 @@ use Maatwebsite\Excel\Facades\Excel;
 						continue;
 					}
 					if($isstart){
-						$tmp["date"] = date("Y-m-d", strtotime($row[0]));
-						$tmp["item"] = $row[1];
-						$tmp["qty"] = $row[2];
-						$tmp["total"] = intval(str_replace(["IDR",","], "", $row[3]));
-						array_push($dataPengeluaran, $tmp);
+						if(trim($row[0]) != ""){
+							$tmp["date"] = date("Y-m-d", strtotime($row[0]));
+							$tmp["item"] = $row[1];
+							$tmp["qty"] = $row[2];
+							$tmp["total"] = intval(str_replace(["IDR",","], "", $row[3]));
+							array_push($dataPengeluaran, $tmp);
+						}
 					}
 				}
 				DB::table("t_penjualan")->insert($dataPenjualan);
