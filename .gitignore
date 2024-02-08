@@ -3,6 +3,7 @@
 /public/storage
 /storage/*.key
 /storage/tmp
+/storage/framework/laravel-excel/*
 /vendor/*
 .env*
 .phpunit.result.cache
