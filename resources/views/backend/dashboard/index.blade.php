@@ -34,22 +34,60 @@
       </div>
       <!-- /.info-box -->
     </div>
+    <div class="col-md-3 col-sm-6 col-xs-12">
+      <div class="info-box">
+        <span class="info-box-icon bg-green"><i class="fa fa-money"></i></span>
+        <div class="info-box-content">
+          <span class="info-box-text">Kas Rekening</span>
+          <span class="info-box-number">Rp. {{ number_format($dataTotal["kas"]) }}</span>
+        </div>
+        <!-- /.info-box-content -->
+      </div>
+      <!-- /.info-box -->
+    </div>
     
 </div>
 <div class="box box-default">
-  <div class="box-header with-border">
+  {{-- <div class="box-header with-border">
     <h3>Grafik Penjualan Harian</h3>
-  </div>
+  </div> --}}
   <div class="box-body">
     <div class="row">
-      <div class="col-md-12">
+      <div class="col-md-6">
+        <div class="box-header with-border">
+          <h3>Grafik Penjualan Harian</h3>
+        </div>
         <div class="chart-container" style="height: 40vh;">
           <canvas id="bar_penjualan"></canvas>
         </div>
       </div>
+      <div class="col-md-6">
+        <div class="box-header with-border">
+          <h3>Top Item Selling last 30 Days</h3>
+        </div>
+        <table class="table table-borderless">
+          <thead>
+            <tr>
+              <th>No</th>
+              <th>Item</th>
+              <th>QTY</th>
+              <th>Total</th>
+            </tr>
+          </thead>
+          <tbody>
+            @foreach ($dataTopItem as $item)
+                <tr>
+                  <td>{{ $loop->iteration }}</td>
+                  <td>{{ $item->item }}</td>
+                  <td>{{ number_format($item->qty) }}</td>
+                  <td>Rp. {{ number_format($item->total) }}</td>
+                </tr>
+            @endforeach
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
-  
 </div>
 @endsection
 
