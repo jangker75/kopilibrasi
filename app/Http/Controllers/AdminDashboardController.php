@@ -19,13 +19,13 @@
 		public function getDataBar(){
 			$penjualan = DB::table('t_penjualan')->selectRaw("date, sum(total) as total")
 							->groupBy("date")
-							->orderBy("date", 'asc')->limit(7)->get();
+							->orderBy("date", 'desc')->limit(7)->get();
 			$labels = [];
 			$datas = [];
 			foreach ($penjualan as $key => $value) {
 				$value->date = date("d M Y", strtotime($value->date));
-				array_push($labels, $value->date);
-				array_push($datas, $value->total);
+				array_unshift($labels, $value->date);
+				array_unshift($datas, $value->total);
 			}
 			$data["penjualan"]["labels"] = $labels;
 			$data["penjualan"]["datas"] = $datas;
