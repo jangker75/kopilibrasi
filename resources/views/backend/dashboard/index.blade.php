@@ -48,9 +48,6 @@
     
 </div>
 <div class="box box-default">
-  {{-- <div class="box-header with-border">
-    <h3>Grafik Penjualan Harian</h3>
-  </div> --}}
   <div class="box-body">
     <div class="row">
       <div class="col-md-6">
@@ -90,6 +87,20 @@
             @endforeach
           </tbody>
         </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="box box-default">
+  <div class="box-body">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="box-header with-border">
+          <h3>Grafik Penjualan dan Pengeluaran Bulanan</h3>
+        </div>
+        <div class="chart-container" style="height: 40vh;">
+          <canvas id="bar_penjualan_monthly"></canvas>
+        </div>
       </div>
     </div>
   </div>
