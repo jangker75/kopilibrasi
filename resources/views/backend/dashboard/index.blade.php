@@ -75,6 +75,11 @@
             </tr>
           </thead>
           <tbody>
+            @if (isset($dataTopItem) || count($dataTopItem) < 1)
+                <tr>
+                  <td align="center" colspan="4">No data to show</td>
+                <tr>
+            @endif
             @foreach ($dataTopItem as $item)
                 <tr>
                   <td>{{ $loop->iteration }}</td>
