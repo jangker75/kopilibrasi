@@ -14,6 +14,7 @@
 			$data["dataBar"] = $this->getDataBar();
 			$data["dataTotal"] = $this->getTotal();
 			$data["dataTopItem"] = $this->getTopItem();
+			$data["dataBarMonthly"] = $this->getBarMonthly();
 			return view('backend.dashboard.index', $data);
 		}
 		public function getDataBar(){
@@ -45,6 +46,42 @@
 						->whereRaw("date between DATE_SUB(NOW(), INTERVAL 30 DAY) and NOW()")
 						->groupBy("item")->orderBy("qty", "desc")->limit(10)
 						->get();
+			return $data;
+		}
+		public function getBarMonthly()
+		{
+			$penjualan = DB::table('t_penjualan')->selectRaw("sum(qty) as qty, sum(total) as total, date")
+					->groupByRaw("MONTH(date)")->get();
+			$pengeluaran = DB::table('t_pengeluaran')->selectRaw("sum(qty) as qty, sum(total) as total, date")
+					->groupByRaw("MONTH(date)")->get();
+			$labels = [];
+			$datas = [];
+			foreach ($penjualan as $key => $value) {
+				$value->date = date("M Y", strtotime($value->date));
+				array_unshift($labels, $value->date);
+				array_unshift($datas, $value->total);
+			}
+			$data["penjualan"]["labels"] = $labels;
+			$data["penjualan"]["datas"] = $datas;
+			
+			$labels = [];
+			$datas = [];
+			foreach ($pengeluaran as $key => $value) {
+				$value->date = date("M Y", strtotime($value->date));
+				array_unshift($labels, $value->date);
+				array_unshift($datas, $value->total);
+			}
+			
+			$data["pengeluaran"]["labels"] = $labels;
+			$data["pengeluaran"]["datas"] = $datas;
+
+			$labels = [];
+			$datas = [];
+			for ($i = count($data["penjualan"]["datas"]); $i >= 0; $i--) { 
+				$omset = $data["penjualan"]["datas"][$i] - $data["pengeluaran"]["datas"][$i];
+				array_unshift($datas, $omset);
+			}
+			$data["omset"]["datas"] = $datas;
 			return $data;
 		}
 	}

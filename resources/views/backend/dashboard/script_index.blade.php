@@ -1,30 +1,28 @@
-<script src="{{ asset('assets/js/chart-2.7.0.min.js') }}"></script>
 {{-- <script src="{{ asset('assets/js/chartjs-plugin-datalabels.min.js') }}"></script> --}}
+<script src="{{ asset('assets/js/chart-2.7.0.min.js') }}"></script>
+{{-- <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.0/dist/chart.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-stacked100@1.0.0"></script> --}}
+
 <script>
     // BAR PENJUALAN START
     let data = {
         labels: {!! json_encode($dataBar["penjualan"]["labels"]) !!},
-        datasets: [{
-            label: 'Total in Rp',
-            data: {!! json_encode($dataBar["penjualan"]["datas"]) !!},
-            backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
-            ],
-            // borderColor: [
-            //     'rgba(255,99,132,1)',
-            //     'rgba(54, 162, 235, 1)',
-            //     'rgba(255, 206, 86, 1)',
-            //     'rgba(75, 192, 192, 1)',
-            //     'rgba(153, 102, 255, 1)',
-            //     'rgba(255, 159, 64, 1)'
-            // ],
-            // borderWidth: 1
-        }]
+        datasets: [
+            {
+                label: 'Total in Rp',
+                data: {!! json_encode($dataBar["penjualan"]["datas"]) !!},
+                // backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                backgroundColor: [
+                    'rgba(255, 99, 132, 0.2)',
+                    'rgba(54, 162, 235, 0.2)',
+                    'rgba(255, 206, 86, 0.2)',
+                    'rgba(75, 192, 192, 0.2)',
+                    'rgba(153, 102, 255, 0.2)',
+                    'rgba(255, 159, 64, 0.2)'
+                ],
+            },
+        ]
     };
     let options = {
         maintainAspectRatio: false,
@@ -49,6 +47,19 @@
                 },
             }
         },
+        plugins: [{
+            datalabels: {
+                color: 'black',
+                display: function(context) {
+                    console.log("A", context.dataset.data[context.dataIndex]);
+                    return context.dataset.data[context.dataIndex] > 1;
+                },
+                font: {
+                weight: 'bold'
+                },
+                formatter: Math.round
+            }
+        }],
         animation: {
             duration: 0,
             onComplete: function() {
@@ -70,10 +81,62 @@
         }
     }
     var ctx = document.getElementById("bar_penjualan").getContext("2d");
-    var myBarChart = new Chart(ctx, {
+    new Chart(ctx, {
         type: 'bar',
         data: data,
         options: options
     });
     // BAR PENJUALAN END
+    // BAR PENJUALAN MONTHLY START
+    let data1 = {
+        labels: {!! json_encode($dataBarMonthly["penjualan"]["labels"]) !!},
+        datasets: [
+            {
+                label: 'Penjualan',
+                data: {!! json_encode($dataBarMonthly["penjualan"]["datas"]) !!},
+                backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                // backgroundColor: [
+                //     'rgba(255, 99, 132, 0.2)',
+                //     'rgba(54, 162, 235, 0.2)',
+                //     'rgba(255, 206, 86, 0.2)',
+                //     'rgba(75, 192, 192, 0.2)',
+                //     'rgba(153, 102, 255, 0.2)',
+                //     'rgba(255, 159, 64, 0.2)'
+                // ],
+            },
+            {
+                label: 'Pengeluaran',
+                data: {!! json_encode($dataBarMonthly["pengeluaran"]["datas"]) !!},
+                backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                // backgroundColor: [
+                //     'rgba(255, 99, 132, 0.2)',
+                //     'rgba(54, 162, 235, 0.2)',
+                //     'rgba(255, 206, 86, 0.2)',
+                //     'rgba(75, 192, 192, 0.2)',
+                //     'rgba(153, 102, 255, 0.2)',
+                //     'rgba(255, 159, 64, 0.2)'
+                // ],
+            },
+            {
+                label: 'Omset',
+                data: {!! json_encode($dataBarMonthly["omset"]["datas"]) !!},
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                // backgroundColor: [
+                //     'rgba(255, 99, 132, 0.2)',
+                //     'rgba(54, 162, 235, 0.2)',
+                //     'rgba(255, 206, 86, 0.2)',
+                //     'rgba(75, 192, 192, 0.2)',
+                //     'rgba(153, 102, 255, 0.2)',
+                //     'rgba(255, 159, 64, 0.2)'
+                // ],
+            },
+        ]
+    };
+    var ctx1 = document.getElementById("bar_penjualan_monthly").getContext("2d");
+    new Chart(ctx1, {
+        type: 'bar',
+        data: data1,
+        options: options
+    });
+    //BAR PENJUALAN MONTHLY END
 </script>
