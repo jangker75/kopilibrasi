@@ -1,16 +1,11 @@
-{{-- <script src="{{ asset('assets/js/chartjs-plugin-datalabels.min.js') }}"></script> --}}
 <script src="{{ asset('assets/js/chart-2.7.0.min.js') }}"></script>
-{{-- <script src="https://cdn.jsdelivr.net/npm/chart.js@3.0.0/dist/chart.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@2.0.0"></script>
-<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-stacked100@1.0.0"></script> --}}
-
 <script>
     // BAR PENJUALAN START
     let data = {
         labels: {!! json_encode($dataBar["penjualan"]["labels"]) !!},
         datasets: [
             {
-                label: 'Total in Rp',
+                label: 'Penjualan',
                 data: {!! json_encode($dataBar["penjualan"]["datas"]) !!},
                 // backgroundColor: 'rgba(54, 162, 235, 0.2)',
                 backgroundColor: [
@@ -47,19 +42,6 @@
                 },
             }
         },
-        plugins: [{
-            datalabels: {
-                color: 'black',
-                display: function(context) {
-                    console.log("A", context.dataset.data[context.dataIndex]);
-                    return context.dataset.data[context.dataIndex] > 1;
-                },
-                font: {
-                weight: 'bold'
-                },
-                formatter: Math.round
-            }
-        }],
         animation: {
             duration: 0,
             onComplete: function() {
