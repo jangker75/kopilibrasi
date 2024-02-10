@@ -58,8 +58,8 @@
 			$datas = [];
 			foreach ($penjualan as $key => $value) {
 				$value->date = date("M Y", strtotime($value->date));
-				array_unshift($labels, $value->date);
-				array_unshift($datas, $value->total);
+				array_push($labels, $value->date);
+				array_push($datas, $value->total);
 			}
 			$data["penjualan"]["labels"] = $labels;
 			$data["penjualan"]["datas"] = $datas;
@@ -68,8 +68,8 @@
 			$datas = [];
 			foreach ($pengeluaran as $key => $value) {
 				$value->date = date("M Y", strtotime($value->date));
-				array_unshift($labels, $value->date);
-				array_unshift($datas, $value->total);
+				array_push($labels, $value->date);
+				array_push($datas, $value->total);
 			}
 			
 			$data["pengeluaran"]["labels"] = $labels;
@@ -77,9 +77,9 @@
 
 			$labels = [];
 			$datas = [];
-			for ($i = count($data["penjualan"]["datas"]); $i >= 0; $i--) { 
+			for ($i = 0; $i < count($data["penjualan"]["datas"]); $i++) { 
 				$omset = $data["penjualan"]["datas"][$i] - $data["pengeluaran"]["datas"][$i];
-				array_unshift($datas, $omset);
+				array_push($datas, $omset);
 			}
 			$data["omset"]["datas"] = $datas;
 			return $data;
