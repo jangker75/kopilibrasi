@@ -1,1 +1,1 @@
-<?php header("Location: https://192.168.0.42/kopilibrasi/public/admin"); ?>
+<?php header("Location: /kopilibrasi/public/admin"); ?>
