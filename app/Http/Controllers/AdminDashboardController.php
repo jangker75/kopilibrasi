@@ -51,9 +51,11 @@
 		public function getBarMonthly()
 		{
 			$penjualan = DB::table('t_penjualan')->selectRaw("sum(qty) as qty, sum(total) as total, date")
-					->groupByRaw("MONTH(date)")->get();
+					->groupByRaw("MONTH(date)")
+					->orderBy("date", "asc")->get();
 			$pengeluaran = DB::table('t_pengeluaran')->selectRaw("sum(qty) as qty, sum(total) as total, date")
-					->groupByRaw("MONTH(date)")->get();
+					->groupByRaw("MONTH(date)")
+					->orderBy("date", "asc")->get();
 			$labels = [];
 			$datas = [];
 			foreach ($penjualan as $key => $value) {
