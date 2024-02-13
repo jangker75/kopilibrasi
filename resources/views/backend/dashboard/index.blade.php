@@ -3,12 +3,19 @@
 @section('content')
 @push('head')
     <style>
-.grid-container {
-  display: grid;
-  grid-template-columns: auto auto;
-  grid-gap: 10px;
-  padding: 10px;
-}
+    .grid-container {
+      display: grid;
+      grid-template-columns: auto auto;
+      grid-gap: 10px;
+      padding: 10px;
+    }
+    .boxc {
+      float: left;
+      height: 20px;
+      width: 20px;
+      border: 0.2px solid black;
+      clear: both;
+    }
     </style>
 @endpush
 <div class="row">
@@ -87,6 +94,45 @@
             @endforeach
           </tbody>
         </table>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="box box-default">
+  <div class="box-body">
+    <div class="row">
+      <div class="col-md-8">
+        <div class="box-header with-border">
+          <h3>Top 10 Item</h3>
+        </div>
+        <div class="chart-container" style="height: 60vh; padding-top: 30px;">
+          <canvas id="doughnut_penjualan_item"></canvas>
+        </div>
+      </div>
+      <div class="col-md-4">
+        <div class="box-header with-border">
+          <h3></h3>
+        </div>
+        <div>
+          <table class="table table-borderless">
+            <thead>
+              <tr>
+                <th></th>
+                <th>Item</th>
+                <th>Qty</th>
+              </tr>
+            </thead>
+            <tbody>
+              @foreach ($dataPie["data"] as $item)
+                <tr>
+                  <td><div class='boxc'></div></td>
+                  <td>{{ $item->item }}</td>
+                  <td>{{ number_format($item->qty) }}</td>
+                </tr>
+              @endforeach
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
