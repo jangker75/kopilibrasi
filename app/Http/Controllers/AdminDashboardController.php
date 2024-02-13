@@ -15,6 +15,8 @@
 			$data["dataTotal"] = $this->getTotal();
 			$data["dataTopItem"] = $this->getTopItem();
 			$data["dataBarMonthly"] = $this->getBarMonthly();
+			$data["dataPie"] = $this->getDataPie();
+
 			return view('backend.dashboard.index', $data);
 		}
 		public function getDataBar(){
@@ -84,6 +86,22 @@
 				array_push($datas, $omset);
 			}
 			$data["omset"]["datas"] = $datas;
+			return $data;
+		}
+		public function getDataPie()
+		{
+			$penjualan = DB::table('t_penjualan')->selectRaw("item, sum(qty) as qty")
+					->groupBy("item")
+					->orderBy("qty", "desc")->limit(10)->get();
+			$labels = [];
+			$datas = [];
+			foreach ($penjualan as $key => $value) {
+				array_push($labels, $value->item);
+				array_push($datas, $value->qty);
+			}
+			$data["data"] = $penjualan;
+			$data["penjualan"]["labels"] = $labels;
+			$data["penjualan"]["datas"] = $datas;
 			return $data;
 		}
 	}
