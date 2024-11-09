@@ -92,6 +92,10 @@
 						'lembur' => 0
 					];
 					DB::table('t_absensi')->insert($dataInsert);
+					$tokenhash = rand(100000, 999999);
+					DB::table("cms_settings")->where("name", "absensi_token")->update([
+						"content" => $tokenhash
+					]);
 				}
 
 				if($postdata["type"] == "checkout"){
@@ -123,6 +127,10 @@
 						];	
 						DB::table('t_absensi')
 						->where('id', $lastcheckin->id)->update($dataInsert);	
+						$tokenhash = rand(100000, 999999);
+						DB::table("cms_settings")->where("name", "absensi_token")->update([
+							"content" => $tokenhash
+						]);
 					}
 				}
 
