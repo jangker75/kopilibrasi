@@ -23,6 +23,7 @@
 					't_absensi.*',
 					'm_employee.name'])
 				->leftjoin("m_employee", "t_absensi.employee_id", "=", "m_employee.id")
+				->orderBy("id","desc")
 				->get();
 				$result["data"] = $data;
 				response() -> json($result) -> send();
