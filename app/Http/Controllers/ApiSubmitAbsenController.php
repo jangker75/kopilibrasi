@@ -107,12 +107,13 @@
 					->where("checkout_date", null)
 					->orderBy('id', 'desc')->first();
 					if($lastcheckin != null){
+						$lembursetting = DB::table("cms_settings")->where("name", "jam_pulang")->first();
 						// $from_time = strtotime($lastcheckin->checkin_date . " " . $lastcheckin->checkin_time);
-						$from_time = strtotime($lastcheckin->checkin_date . " " . "23:00:00");
+						$from_time = strtotime($lastcheckin->checkin_date . " " . $lembursetting->content);
 						$to_time = strtotime($date . " " . $time);
 						$isLembur = $to_time > $from_time ? 1 : 0;
 						if($isLembur > 0){
-							$diffLembur = round(abs($isLembur - $from_time) / 60,2);
+							$diffLembur = round(abs($to_time - $from_time) / 60,2);
 							
 							$hours = intdiv($diffLembur, 60).':'. (($diffLembur % 60) < 10 ? '0'.($diffLembur % 60) : ($diffLembur % 60));
 							$lembur = $diffLembur;
