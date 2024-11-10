@@ -35,14 +35,22 @@ use Session;
 						->whereIn("checkin_date", [$date, $dateYesterday])
 						->orderBy("id", "desc")
 						->first();
+						
+						if($lastAbsen->checkout_time != null && $lastAbsen->checkout_time != ""){
+							$lastAbsen = DB::table('t_absensi')
+								->where("employee_id", $idEmployee->id)
+								->whereIn("checkin_date", [$date])
+								->orderBy("id", "desc")
+								->first();
+						}
 						$data = [
-							"is_admin" => $idEmployee->is_admin,
+							"is_admin" => $idEmployee->is_admin ?? "",
 							"name" => $idEmployee->name,
 							"id" => $idEmployee->id,
-							"checkin_date" => trim($lastAbsen->checkin_date . " " . $lastAbsen->checkin_time),	
-							"checkout_date" => trim($lastAbsen->checkout_date . " " . $lastAbsen->checkout_time),	
-							"lembur_hour" => trim($lastAbsen->lembur_hour),
-							"lembur" => $lastAbsen->lembur
+							"checkin_date" => ($lastAbsen != null) ? trim($lastAbsen->checkin_date . " " . $lastAbsen->checkin_time) : "",
+							"checkout_date" => ($lastAbsen != null) ? trim($lastAbsen->checkout_date . " " . $lastAbsen->checkout_time) : "", 	
+							"lembur_hour" => ($lastAbsen != null) ? trim($lastAbsen->lembur_hour) : "",
+							"lembur" => ($lastAbsen != null) ? $lastAbsen->lembur : ""
 						];
 						$result["data"] = $data;
 					}
