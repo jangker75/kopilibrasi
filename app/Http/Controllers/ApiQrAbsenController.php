@@ -22,12 +22,7 @@
 					$result["api_message"] = "Anda bukan admin";
 				}else{
 					$employee = DB::table('m_employee')->where("device_id", $postdata["device_id"])->first();
-                    if(env('APP_DEBUG', true)){
-                        dd([
-                            $postdata,
-                            $employee
-                        ]);
-                    }
+
 					if($employee != null && $employee->is_admin == 1){
 						$tokenhash = rand(100000, 999999);
 						DB::table("cms_settings")->where("name", "absensi_token")->update([

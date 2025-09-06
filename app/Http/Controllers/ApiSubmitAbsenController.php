@@ -7,12 +7,12 @@
 
 		class ApiSubmitAbsenController extends \crocodicstudio\crudbooster\controllers\ApiController {
 
-		    function __construct() {    
-				$this->table       = "t_absensi";        
-				$this->permalink   = "submit_absen";    
-				$this->method_type = "get";    
+		    function __construct() {
+				$this->table       = "t_absensi";
+				$this->permalink   = "submit_absen";
+				$this->method_type = "get";
 		    }
-		
+
 
 		    public function hook_before(&$postdata) {
 		        //This method will be execute before run the main process
@@ -29,6 +29,13 @@
 				$dataInsert = [];
 				$idEmployee = null;
 				$tokenNow = DB::table("cms_settings")->where("name", "absensi_token")->first();
+                $idEmployee = DB::table('m_employee')->where("device_id", $postdata["device_id"])->first();
+                if(env('APP_DEBUG', true)){
+                        dd([
+                            $postdata,
+                            $idEmployee
+                        ]);
+                    }
 				if($tokenNow == null || $tokenNow->content == "" || $postdata["token"] != $tokenNow->content){
 					$result["api_message"] = "Error, QR Code tidak valid";
 					response() -> json($result) -> send();
@@ -39,9 +46,9 @@
 					if($idEmployee == null){
 						$result["api_status"] = 0;
 						$result["api_message"] = "Error, password salah";
-						
+
 						response() -> json($result) -> send();
-						exit();	
+						exit();
 					}else{
 						DB::table('m_employee')->where("id", $idEmployee->id)->update([
 							'device_id' => $postdata["device_id"],
@@ -56,18 +63,18 @@
 						// 	'name' => $idEmployee->name,
 						// 	'status' => "ACTIVE",
 						// 	'is_admin' => 0,
-						// ]);	
+						// ]);
 						// $idEmployee = DB::table('m_employee')->where("device_id", $postdata["device_id"])->first();
 						$result["api_status"] = 0;
 						$result["api_message"] = "Silahkan hubungi admin utk register akun";
-						
+
 						response() -> json($result) -> send();
 						exit();
 					}
 				}else{
 					$result["api_status"] = 0;
 					$result["api_message"] = "Error something wrong";
-					
+
 					response() -> json($result) -> send();
 					exit();
 				}
@@ -78,7 +85,7 @@
 					->whereIn("checkin_date", [$date, $dateYesterday])
 					->where("checkout_date", null)
 					->orderBy('id', 'desc')->first();
-					
+
 					if($checkin != null){
 						$result["api_status"] = 0;
 						$result["api_message"] = "Maaf, Anda sudah melakukan checkin";
@@ -114,20 +121,20 @@
 						$isLembur = $to_time > $from_time ? 1 : 0;
 						if($isLembur > 0){
 							$diffLembur = round(abs($to_time - $from_time) / 60,2);
-							
+
 							$hours = intdiv($diffLembur, 60).':'. (($diffLembur % 60) < 10 ? '0'.($diffLembur % 60) : ($diffLembur % 60));
 							$lembur = $diffLembur;
 						}
-						
+
 						$dataInsert = [
 							'employee_id' => $idEmployee->id,
 							'checkout_date' => $date,
 							'checkout_time' => $time,
 							'lembur' => $lembur,
 							"lembur_hour" => $hours
-						];	
+						];
 						DB::table('t_absensi')
-						->where('id', $lastcheckin->id)->update($dataInsert);	
+						->where('id', $lastcheckin->id)->update($dataInsert);
 						$tokenhash = rand(100000, 999999);
 						DB::table("cms_settings")->where("name", "absensi_token")->update([
 							"content" => $tokenhash
@@ -154,7 +161,7 @@
 
 		    public function hook_after($postdata,&$result) {
 		        //This method will be execute after run the main process
-				
+
 		    }
 
 		}
