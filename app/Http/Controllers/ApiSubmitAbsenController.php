@@ -31,6 +31,8 @@
 				$tokenNow = DB::table("cms_settings")->where("name", "absensi_token")->first();
                 $idEmployee = DB::table('m_employee')->where("device_id", $postdata["device_id"])->first();
                 if(env('APP_DEBUG', true)){
+                        \Log::info('SubmitAbsenController - Incoming postdata:', $postdata);
+                        \Log::info('SubmitAbsenController - Found employee:', (array) $idEmployee);
                         dd([
                             $postdata,
                             $idEmployee
