@@ -7,12 +7,12 @@
 
 		class ApiQrAbsenController extends \crocodicstudio\crudbooster\controllers\ApiController {
 
-		    function __construct() {    
-				$this->table       = "cms_settings";        
-				$this->permalink   = "qr_absen";    
-				$this->method_type = "get";    
+		    function __construct() {
+				$this->table       = "cms_settings";
+				$this->permalink   = "qr_absen";
+				$this->method_type = "get";
 		    }
-		
+
 
 		    public function hook_before(&$postdata) {
 		        //This method will be execute before run the main process
@@ -22,6 +22,12 @@
 					$result["api_message"] = "Anda bukan admin";
 				}else{
 					$employee = DB::table('m_employee')->where("device_id", $postdata["device_id"])->first();
+                    if(env('APP_DEBUG', true)){
+                        dd([
+                            $postdata,
+                            $employee
+                        ]);
+                    }
 					if($employee != null && $employee->is_admin == 1){
 						$tokenhash = rand(100000, 999999);
 						DB::table("cms_settings")->where("name", "absensi_token")->update([
@@ -31,7 +37,7 @@
 						$result["api_message"] = "Success get token";
 						$result["data"] = [
 							"token" => $tokenhash
-						];	
+						];
 					}else{
 						$result["api_message"] = "Anda bukan admin";
 					}
